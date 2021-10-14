@@ -1,5 +1,8 @@
+import { Session } from "./session.interface";
+
 export interface User {
-  id?: number;
+  id?: string;
   userName: string;
   password: string;
+  sessions?: Session[]
 }

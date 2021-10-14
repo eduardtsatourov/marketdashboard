@@ -1,16 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { SessionEntity } from "./session.entity";
 
 @Entity()
 export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   userName: string;
 
   @Column()
   password: string;
-}
 
-// @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
-// createDateTime: Date;
+  @OneToMany(() => SessionEntity, session => session.user, {nullable: true})
+  sessions: SessionEntity[];
+}

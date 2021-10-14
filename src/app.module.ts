@@ -3,7 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 import * as dotenv from 'dotenv';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/auth.guard';
+import { SessionEntity } from './user/entities/session.entity';
 
 dotenv.config();
 
@@ -19,9 +23,17 @@ dotenv.config();
       entities: ["dist/**/*.entity{.ts,.js}"],
       synchronize: process.env.MODE === 'DEV',
     }),
-    UserModule
+    TypeOrmModule.forFeature([SessionEntity]),
+    UserModule,
+    AuthModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard
+    }
+  ],
 })
 export class AppModule {}
