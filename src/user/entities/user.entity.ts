@@ -14,4 +14,7 @@ export class UserEntity {
 
   @OneToMany(() => SessionEntity, session => session.user, {nullable: true})
   sessions: SessionEntity[];
+
+  @Column('boolean', {default: false})
+  showMarketLosers: boolean;
 }

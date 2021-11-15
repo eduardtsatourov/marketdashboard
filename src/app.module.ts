@@ -10,6 +10,9 @@ import { AuthGuard } from './auth/auth.guard';
 import { SessionEntity } from './user/entities/session.entity';
 import { CleanupService } from './cleanup/cleanup.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { StockApiService } from './stock-api/stock-api.service';
+import { StockController } from './stock/stock.controller';
+import { HttpModule } from '@nestjs/axios';
 
 dotenv.config();
 
@@ -28,16 +31,18 @@ dotenv.config();
     TypeOrmModule.forFeature([SessionEntity]),
     ScheduleModule.forRoot(),
     UserModule,
-    AuthModule
+    AuthModule,
+    HttpModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, StockController],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard
     },
-    CleanupService
+    CleanupService,
+    StockApiService
   ],
 })
 export class AppModule {}

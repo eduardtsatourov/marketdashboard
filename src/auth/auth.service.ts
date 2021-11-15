@@ -17,7 +17,7 @@ export class AuthService {
   async loginUser(user: User): Promise<string | null> {
     const foundUser = await this.userRepository.find({ where: { userName: user.userName, password: user.password }});
     if (foundUser) {
-      const session = await this.sessionRepository.save({});
+      const session = await this.sessionRepository.save({user: foundUser[0]});
       return session.id;
     }
     return null;

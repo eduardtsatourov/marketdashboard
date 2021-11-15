@@ -15,6 +15,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(
     context: ExecutionContext,
   ): Promise<boolean> {
+    // return true // no auth
     //no authentication needed when @Public decorator is added to method in controller
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
@@ -27,11 +28,12 @@ export class AuthGuard implements CanActivate {
 
     const req = context.switchToHttp().getRequest();
     const sessionId = req.headers["x-session-id"];
-    const session = await this.sessionRepository.findOne(sessionId);
-    if (session) {
-      return true;
+    const session = await this.sessionRepository.findOne(sessionId, {relations: ['user']});
+    if (!session) {
+      throw new UnauthorizedException();
     }
-
-    throw new UnauthorizedException();
+    req.user = session.user;
+    req.session = session;
+    return true;
   }
 }
